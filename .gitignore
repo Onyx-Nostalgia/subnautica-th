@@ -1,0 +1,8 @@
+# python ignore file
+__pycache__/
+.venv/
+
+tmp/
+data/
+final/
+.ruff_cache

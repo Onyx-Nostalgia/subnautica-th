@@ -1,0 +1,12 @@
+[project]
+name = "subnautica-th"
+version = "0.1.0"
+description = "Subnautica Thai Localization"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+    "pandas>=2.3.3",
+    "pyyaml",
+    "rich>=14.2.0",
+    "streamlit>=1.52.2",
+]
