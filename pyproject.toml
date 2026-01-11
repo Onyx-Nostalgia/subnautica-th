@@ -2,6 +2,10 @@
 name = "subnautica-th"
 version = "0.1.0"
 description = "Subnautica Thai Localization"
+readme = "README.md"
+authors = [
+    { name = "Onyx-Nostalgia", email = "nostalgia.onyx@gmail.com" }
+]
 requires-python = ">=3.10"
 dependencies = [
     "google-genai",
@@ -10,3 +14,6 @@ dependencies = [
     "rich>=14.2.0",
     "streamlit>=1.52.2",
 ]
+
+[project.urls]
+Repository = "https://github.com/Onyx-Nostalgia/subnautica-th"
