@@ -17,7 +17,7 @@ def create_phase_complete(phase_obj):
     
     console.print(f"[bold blue]Creating translation complete file for:[/bold blue] {phase_obj.DIR}")
     
-    approved_path = phase_obj.APPROVED_REVIEW_PATH
+    approved_path = phase_obj.APPROVED_INSPECTION_PATH
     complete_path = phase_obj.COMPLETE_PATH
 
     if not approved_path.exists():

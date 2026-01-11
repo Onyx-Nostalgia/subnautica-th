@@ -7,8 +7,8 @@ import config
 from utils import (
     build_final_translation,
     create_phase_complete,
-    create_review_form,
     deploy_to_game,
+    generate_inspection_files,
     re_encode_final_files,
     setup_phase,
     update_complete_from_fixed,
@@ -110,7 +110,7 @@ def main():
                 res = ask_phase()
                 if res:
                     phase_obj, _, _ = res
-                    create_review_form(phase_obj)
+                    generate_inspection_files(phase_obj)
 
             case "3":
                 # --- Create Translation Complete ---

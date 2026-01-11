@@ -10,10 +10,10 @@ class TranslationPhase:
         self.DIR = Path(directory)
         self.KEY_PATH = self.DIR / 'translation_key.json'
         self.PROGRESS_PATH = self.DIR / 'translation_progress.json'
-        self.REVIEW_PATH = self.DIR / 'translation_review.json'
+        self.INSPECTION_PATH = self.DIR / 'translation_inspection.json'
         self.COMPLETE_PATH = self.DIR / 'translation_complete.json'
-        self.APPROVED_REVIEW_PATH = self.DIR / 'translation_approved_review.json'
-        self.UNAPPROVED_REVIEW_PATH = self.DIR / 'translation_unapproved_review.json'
+        self.APPROVED_INSPECTION_PATH = self.DIR / 'translation_approved_inspection.json'
+        self.UNAPPROVED_INSPECTION_PATH = self.DIR / 'translation_unapproved_inspection.json'
 
 # Original File Paths
 ORIGINAL_ENGLISH_PATH = Path('data/Original/English.json')
