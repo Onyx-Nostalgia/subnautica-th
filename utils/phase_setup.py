@@ -47,7 +47,8 @@ def setup_phase(phase_obj, source_data_path):
     # Load Manual Updates (Optional/Legacy support + Extra sources)
     manual_data = {}
     manual_paths = [
-        config.DECODED_THAI_V2_PATH,
+        # example manual paths; adjust as needed
+        # config.DECODED_THAI_V2_PATH,
     ]
 
     for path in manual_paths:

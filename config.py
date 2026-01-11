@@ -44,8 +44,9 @@ PHASE_4_PATH = PHASE_DIR / '4_The_Journey_Lore.json'
 PHASE_5_PATH = PHASE_DIR / '5_The_Encyclopedia.json'
 
 # ==========================================
-# Phase Contexts (Refactored)
+# Phase Contexts
 # ==========================================
+# Usage: config.PHASE_3.KEY_PATH, config.PHASE_3.PROGRESS_PATH, etc.
 
 # Phase 1: Core System & UI
 PHASE_1 = TranslationPhase('data/1_core_system_ui')
@@ -62,11 +63,10 @@ PHASE_4 = TranslationPhase('data/4_the_journey_lore')
 # Phase 5: The Encyclopedia
 PHASE_5 = TranslationPhase('data/5_the_encyclopedia')
 
-# Usage: config.PHASE_3.KEY_PATH, config.PHASE_3.PROGRESS_PATH, etc.
 
 # Temporary Paths
-DECODED_THAI_V1_PATH = 'final/Thai_v1_decode.json'
-DECODED_THAI_V2_PATH = 'data/tmp/Decoded_Thai_v2.json'
+## example manual paths; adjust as needed
+# DECODED_THAI_V2_PATH = 'data/tmp/Decoded_Thai_v2.json'
 
 # Game Configuration
 # TODO: Make this configurable via environment variable or user input

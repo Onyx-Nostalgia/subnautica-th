@@ -77,7 +77,6 @@ def build_final_translation():
         config.PHASE_3.COMPLETE_PATH,
         config.PHASE_4.COMPLETE_PATH,
         config.PHASE_5.COMPLETE_PATH,
-        Path(config.DECODED_THAI_V1_PATH),
     ]
     
     processed_sources = []
