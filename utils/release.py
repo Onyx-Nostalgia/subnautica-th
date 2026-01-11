@@ -113,40 +113,84 @@ def build_final_translation():
     # Write decoded file (Readable UTF-8)
     save_json(merged_data, final_decode_path)
 
-def deploy_to_game(version: Optional[int] = None):
+def deploy_to_game(version: Optional[int] = None, destination: Optional[Path] = None):
+
     """
+
     Copies the specified (or latest) translation version to the game directory.
+
+    Args:
+
+        version: Specific version to deploy. If None, finds latest.
+
+        destination: Target file path (e.g., .../Thai.json). If None, uses config default.
+
     """
+
     console.print("[bold blue]Deploying to game...[/bold blue]")
+
     
+
     if version is None:
+
         version = get_latest_version_number()
+
         if version == 0:
+
             console.print("[bold red]No final translation files found.[/bold red]")
+
             return
+
         console.print(f"Latest version detected: [bold green]v{version}[/bold green]")
+
     
+
     source_file = FINAL_DIR / f"Thai_v{version}.json"
+
     
+
     if not source_file.exists():
+
         console.print(f"[bold red]Error:[/bold red] File not found: {source_file}")
+
         console.print("Please check the version number.")
-        return
-    
-    destination = config.GAME_TRANSLATION_PATH
-    
-    # Validate destination directory
-    if not destination.parent.exists():
-        console.print("[bold red]Error:[/bold red] Game directory not found at:")
-        console.print(f"{destination.parent}")
-        console.print("Please check GAME_TRANSLATION_PATH in config.py")
+
         return
 
-    console.print(f"Source: [blue]{source_file}[/blue]")
-    console.print(f"Destination: [blue]{destination}[/blue]")
     
+
+    # Use provided destination or fallback to config
+
+    final_dest = destination if destination else config.GAME_TRANSLATION_PATH
+
+    
+
+    # Validate destination directory
+
+    if not final_dest.parent.exists():
+
+        console.print("[bold red]Error:[/bold red] Destination directory not found at:")
+
+        console.print(f"{final_dest.parent}")
+
+        return
+
+
+
+    console.print(f"Source: [blue]{source_file}[/blue]")
+
+    console.print(f"Destination: [blue]{final_dest}[/blue]")
+
+    
+
     try:
-        shutil.copy2(source_file, destination)
+
+        shutil.copy2(source_file, final_dest)
+
         console.print(f"[bold green]Successfully deployed v{version} to game![/bold green]")
+
     except IOError as e:
+
         console.print(f"[bold red]Deployment failed:[/bold red] {e}")
+
+

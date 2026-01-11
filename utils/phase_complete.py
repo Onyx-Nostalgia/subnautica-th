@@ -77,8 +77,8 @@ def update_complete_from_fixed(phase_num: int, version: int):
         return
 
     # Construct source path
-    # Example: agent_auditor/phase_2_review/fixed_1.json
-    source_path = f"agent_auditor/phase_{phase_num}_review/fixed_{version}.json"
+    # Example: agent/agent_auditor/phase_2_review/fixed_1.json
+    source_path = f"agent/agent_auditor/phase_{phase_num}_review/fixed_{version}.json"
     
     console.print(f"[bold blue]Updating phase {phase_num} from fixed file:[/bold blue] {source_path}")
 
