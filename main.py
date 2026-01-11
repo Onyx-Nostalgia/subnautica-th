@@ -22,63 +22,51 @@ from phase_mapping.generate_phase_json import main as generate_phase_main
 
 console = Console()
 
+def ask_phase():
+    """
+    Helper to ask for phase number and return config objects.
+    Returns: (phase_obj, phase_path, phase_num_str) or None if cancelled.
+    """
+    phase_num = Prompt.ask("\nEnter Phase Number", choices=["1", "2", "3", "4", "5", "b"], default="b")
+    
+    if phase_num == "b":
+        return None
+        
+    phase_obj = getattr(config, f"PHASE_{phase_num}")
+    phase_path = getattr(config, f"PHASE_{phase_num}_PATH")
+    
+    return phase_obj, phase_path, phase_num
+
 def main():
-    console.print("[bold blue]Subnautica Thai Localization Tool[/bold blue]")
-    
-    choices = [
-        "0. Initialization & Setup (Clone Data, Preprocess, Classify)",
-        "------------------------------------",
-        "1. Setup Phase 1 (Core System & UI)",
-        "2. Setup Phase 2 (Glossary Items)",
-        "3. Setup Phase 3 (Story - The Awakening)",
-        "4. Setup Phase 4 (The Journey Lore)",
-        "5. Setup Phase 5 (The Encyclopedia)",
-        "------------------------------------",
-        "6. Create Review Form Phase 1",
-        "7. Create Review Form Phase 2",
-        "8. Create Review Form Phase 3",
-        "9. Create Review Form Phase 4",
-        "10. Create Review Form Phase 5",
-        "------------------------------------",
-        "11. Create Translation Complete Phase 1",
-        "12. Create Translation Complete Phase 2",
-        "13. Create Translation Complete Phase 3",
-        "14. Create Translation Complete Phase 4",
-        "15. Create Translation Complete Phase 5",
-        "------------------------------------",
-        "16. Build Final Translation",
-        "17. Deploy to Game",
-        "18. Update Complete from Fixed",
-        "------------------------------------",
-        "19. Open Translation Editor (Instructions)",
-        "20. Re-Encode Final Files (Update from Decode)",
-        "------------------------------------",
-        "q. Quit"
-    ]
-    
-    console.clear() # Clear start
-    
     while True:
+        console.clear()
         console.print("[bold blue]Subnautica Thai Localization Tool[/bold blue]")
-        console.print("\n[bold]Select an action:[/bold]")
-        for choice in choices:
-            console.print(choice)
-            
-        action = Prompt.ask("Enter choice", choices=[
-            "0",
-            "1", "2", "3", "4", "5", 
-            "6", "7", "8", "9", "10", 
-            "11", "12", "13", "14", "15","16","17", "18", "19", "20",
-             "q"
-        ], default="q")
+        console.print("\n[bold]Main Menu:[/bold]")
+        
+        main_choices = {
+            "0": "Initialization & Setup (Clone Data, Preprocess, Classify)",
+            "1": "Setup Phase (Prepare files for translation)",
+            "2": "Create Review Form (For Agent/Manual Review)",
+            "3": "Create Translation Complete (Finalize Phase)",
+            "4": "Build Final Translation (Merge all phases)",
+            "5": "Deploy to Game",
+            "6": "Utilities / Tools (Editor, Fix, Re-encode)",
+            "q": "Quit"
+        }
+
+        for key, desc in main_choices.items():
+            console.print(f"[cyan]{key}.[/cyan] {desc}")
+
+        action = Prompt.ask("\nSelect an action", choices=list(main_choices.keys()), default="q")
         
         if action == "q":
             break
-            
+
+        console.print(f"\n[bold]Selected:[/bold] {main_choices[action]}")
+
         match action:
             case "0":
-                console.clear()
-                console.print("[bold cyan]--- Initialization & Setup ---[/bold cyan]")
+                # --- Initialization ---
                 sub_choices = [
                     "1. Clone Data from Game",
                     "2. Run Pre-processing (Clean & Parse)",
@@ -87,7 +75,7 @@ def main():
                     "b. Back"
                 ]
                 while True:
-                    console.print("\n[bold]Setup Menu:[/bold]")
+                    console.print("\n[bold cyan]--- Initialization & Setup ---[/bold cyan]")
                     for sc in sub_choices:
                         console.print(sc)
                     
@@ -97,60 +85,50 @@ def main():
                         break
                     
                     match sub_action:
-                        case "1":
-                            setup_workspace()
-                        case "2":
+                        case "1": setup_workspace()
+                        case "2": 
                             pre_proccess()
                             clean_thai()
                             run_comparison()
-                        case "3":
+                        case "3": 
                             run_classification()
                             run_category_tree()
-                        case "4":
-                            generate_phase_main()
+                        case "4": generate_phase_main()
                     
-                    console.input("\n[dim]Press Enter to continue...[/dim]")
-                    console.clear()
+                    if sub_action != "b":
+                        console.input("\n[dim]Press Enter to continue...[/dim]")
 
             case "1":
-                setup_phase(config.PHASE_1, config.PHASE_1_PATH)
+                # --- Setup Phase ---
+                res = ask_phase()
+                if res:
+                    phase_obj, phase_path, _ = res
+                    setup_phase(phase_obj, phase_path)
+
             case "2":
-                setup_phase(config.PHASE_2, config.PHASE_2_PATH)
+                # --- Create Review Form ---
+                res = ask_phase()
+                if res:
+                    phase_obj, _, _ = res
+                    create_review_form(phase_obj)
+
             case "3":
-                setup_phase(config.PHASE_3, config.PHASE_3_PATH)
+                # --- Create Translation Complete ---
+                res = ask_phase()
+                if res:
+                    phase_obj, _, _ = res
+                    create_phase_complete(phase_obj)
+
             case "4":
-                setup_phase(config.PHASE_4, config.PHASE_4_PATH)
-            case "5":
-                setup_phase(config.PHASE_5, config.PHASE_5_PATH)
-            case "6":
-                create_review_form(config.PHASE_1)
-            case "7":
-                create_review_form(config.PHASE_2)
-            case "8":
-                create_review_form(config.PHASE_3)
-            case "9":
-                create_review_form(config.PHASE_4)
-            case "10":
-                create_review_form(config.PHASE_5)
-            case "11":
-                create_phase_complete(config.PHASE_1)
-            case "12":
-                create_phase_complete(config.PHASE_2)
-            case "13":
-                create_phase_complete(config.PHASE_3)
-            case "14":
-                create_phase_complete(config.PHASE_4)
-            case "15":
-                create_phase_complete(config.PHASE_5)
-            case "16":
+                # --- Build Final ---
                 build_final_translation()
-            case "17":
-                # Ask for version (Optional)
+
+            case "5":
+                # --- Deploy ---
                 deploy_version = None
                 if Prompt.ask("Deploy specific version?", choices=["y", "n"], default="n") == "y":
                     deploy_version = int(Prompt.ask("Enter version number"))
 
-                # Ask for destination path logic
                 default_dest = config.GAME_TRANSLATION_PATH
                 console.print(f"\nDefault Destination: [cyan]{default_dest}[/cyan]")
                 
@@ -173,36 +151,57 @@ def main():
                         else:
                             console.print(f"[bold red]Error:[/bold red] Directory not found: {final_dest.parent}")
                             if Prompt.ask("Try again?", choices=["y", "n"], default="y") == "n":
-                                final_dest = None # Cancelled
+                                final_dest = None
                                 break
                 
                 if final_dest:
                     deploy_to_game(version=deploy_version, destination=final_dest)
 
-            case "19":
-                console.print(Panel(
-                    "[bold yellow]To start the Translation Editor:[/bold yellow]\n\n"
-                    "Please open a [bold]NEW TERMINAL[/bold] window and run the following command:\n\n"
-                    "[bold green]uv run streamlit run editor.py[/bold green]\n\n"
-                    "This will launch the editor in your default web browser.\n"
-                    "You can keep this main menu open while using the editor.",
-                    title="📝 Translation Editor",
-                    expand=False
-                ))
-
-            case "20":
-                re_encode_final_files()
-            case "18":
-                phase_num = Prompt.ask("Enter phase number", choices=["1", "2", "3", "4", "5"])
-                version = Prompt.ask("Enter fixed version number", default="1")
-                update_complete_from_fixed(int(phase_num), int(version))
+            case "6":
+                # --- Utilities ---
+                while True:
+                    console.print("\n[bold cyan]--- Utilities / Tools ---[/bold cyan]")
+                    util_choices = {
+                        "1": "Update Complete from Fixed (Audit Fix)",
+                        "2": "Re-Encode Final Files (Update from Decode)",
+                        "3": "Open Translation Editor (Instructions)",
+                        "b": "Back"
+                    }
+                    for k, v in util_choices.items():
+                        console.print(f"[cyan]{k}.[/cyan] {v}")
+                    
+                    util_action = Prompt.ask("Select tool", choices=list(util_choices.keys()), default="b")
+                    
+                    if util_action == "b":
+                        break
+                        
+                    match util_action:
+                        case "1":
+                            res = ask_phase()
+                            if res:
+                                _, _, phase_num = res
+                                version = Prompt.ask("Enter fixed version number", default="1")
+                                update_complete_from_fixed(int(phase_num), int(version))
+                        case "2":
+                            re_encode_final_files()
+                        case "3":
+                            console.print(Panel(
+                                "[bold yellow]To start the Translation Editor:[/bold yellow]\n\n"
+                                "Please open a [bold]NEW TERMINAL[/bold] window and run the following command:\n\n"
+                                "[bold green]uv run streamlit run editor.py[/bold green]\n\n"
+                                "This will launch the editor in your default web browser.\n"
+                                "You can keep this main menu open while using the editor.",
+                                title="📝 Translation Editor",
+                                expand=False
+                            ))
+                    
+                    console.input("\n[dim]Press Enter to continue...[/dim]")
+                    console.clear()
         
+        # Centralized Pause for main actions (excluding sub-menus and quit)
+        if action not in ["0", "6", "q"]:
+            console.input("\n[dim]Press Enter to continue...[/dim]")
 
-        # Pause and Clear
-        console.input("\n[dim]Press Enter to continue...[/dim]")
-        console.clear()
-
-            
     console.print("[bold green]Goodbye![/bold green]")
 
 if __name__ == "__main__":
