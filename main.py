@@ -9,6 +9,7 @@ from utils import (
     create_phase_complete,
     create_review_form,
     deploy_to_game,
+    re_encode_final_files,
     setup_phase,
     update_complete_from_fixed,
 )
@@ -50,6 +51,7 @@ def main():
         "18. Update Complete from Fixed",
         "------------------------------------",
         "19. Open Translation Editor (Instructions)",
+        "20. Re-Encode Final Files (Update from Decode)",
         "------------------------------------",
         "q. Quit"
     ]
@@ -66,7 +68,7 @@ def main():
             "0",
             "1", "2", "3", "4", "5", 
             "6", "7", "8", "9", "10", 
-            "11", "12", "13", "14", "15","16","17", "18", "19",
+            "11", "12", "13", "14", "15","16","17", "18", "19", "20",
              "q"
         ], default="q")
         
@@ -187,6 +189,9 @@ def main():
                     title="📝 Translation Editor",
                     expand=False
                 ))
+
+            case "20":
+                re_encode_final_files()
             case "18":
                 phase_num = Prompt.ask("Enter phase number", choices=["1", "2", "3", "4", "5"])
                 version = Prompt.ask("Enter fixed version number", default="1")

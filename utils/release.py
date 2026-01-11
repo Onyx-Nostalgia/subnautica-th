@@ -113,83 +113,103 @@ def build_final_translation():
     save_json(merged_data, final_decode_path)
 
 def deploy_to_game(version: Optional[int] = None, destination: Optional[Path] = None):
-
     """
-
     Copies the specified (or latest) translation version to the game directory.
-
     Args:
-
         version: Specific version to deploy. If None, finds latest.
-
         destination: Target file path (e.g., .../Thai.json). If None, uses config default.
-
     """
-
     console.print("[bold blue]Deploying to game...[/bold blue]")
-
     
-
     if version is None:
-
         version = get_latest_version_number()
-
         if version == 0:
-
             console.print("[bold red]No final translation files found.[/bold red]")
-
             return
-
         console.print(f"Latest version detected: [bold green]v{version}[/bold green]")
-
     
-
     source_file = FINAL_DIR / f"Thai_v{version}.json"
-
     
-
     if not source_file.exists():
-
         console.print(f"[bold red]Error:[/bold red] File not found: {source_file}")
-
         console.print("Please check the version number.")
-
         return
-
     
-
     # Use provided destination or fallback to config
-
     final_dest = destination if destination else config.GAME_TRANSLATION_PATH
-
     
-
     # Validate destination directory
-
     if not final_dest.parent.exists():
-
         console.print("[bold red]Error:[/bold red] Destination directory not found at:")
-
         console.print(f"{final_dest.parent}")
-
         return
-
-
 
     console.print(f"Source: [blue]{source_file}[/blue]")
-
     console.print(f"Destination: [blue]{final_dest}[/blue]")
-
     
-
     try:
-
         shutil.copy2(source_file, final_dest)
-
         console.print(f"[bold green]Successfully deployed v{version} to game![/bold green]")
-
     except IOError as e:
-
         console.print(f"[bold red]Deployment failed:[/bold red] {e}")
 
+def re_encode_final_files():
+    """
+    Scans the final directory for *_decode.json files and re-encodes them 
+    into their corresponding game-ready files (ASCII escaped).
+    Only updates if content has changed.
+    """
+    console.print("[bold blue]Re-encoding final files...[/bold blue]")
+    
+    if not FINAL_DIR.exists():
+        console.print(f"[bold red]Error:[/bold red] Directory not found: {FINAL_DIR}")
+        return
 
+    decode_files = list(FINAL_DIR.glob("*_decode.json"))
+    
+    if not decode_files:
+        console.print("[yellow]No decoded files found to process.[/yellow]")
+        return
+
+    updated_count = 0
+    skipped_count = 0
+    
+    for decode_path in decode_files:
+        target_name = decode_path.name.replace("_decode.json", ".json")
+        target_path = FINAL_DIR / target_name
+        
+        try:
+            # 1. Read source (decoded)
+            with open(decode_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # 2. Generate new content
+            new_content = json.dumps(data, ensure_ascii=True, indent=4)
+            
+            # 3. Check existing
+            is_different = True
+            if target_path.exists():
+                with open(target_path, 'r', encoding='utf-8') as f:
+                    current_content = f.read()
+                
+                if current_content == new_content:
+                    is_different = False
+            
+            # 4. Write if different
+            if is_different:
+                with open(target_path, 'w', encoding='utf-8') as f:
+                    f.write(new_content)
+                
+                action = "Created" if not target_path.exists() else "Updated"
+                console.print(f"  - [green]{action}:[/green] {target_name}")
+                updated_count += 1
+            else:
+                skipped_count += 1
+
+        except Exception as e:
+            console.print(f"  - [red]Failed:[/red] {decode_path.name} -> {e}")
+
+    if updated_count == 0:
+        console.print("[yellow]No files needed updating.[/yellow]")
+    else:
+        console.print(f"[bold green]Done! Updated {updated_count} files (Skipped {skipped_count}).[/bold green]")
