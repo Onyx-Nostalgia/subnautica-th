@@ -53,9 +53,9 @@
 เมื่อต้องการดูภาพรวมงาน หรือเตรียมข้อมูลสำหรับส่งต่อ (เช่น ให้คนหรือ AI รับช่วงต่อ) เพื่อจะได้ทราบว่ามีข้อความใดที่ยังไม่เสร็จบ้างหรือผ่านการ Approve แล้วบ้าง
 *   เลือกเมนู **`2. Generate Inspection Files`** แล้วระบุเลข Phase
 *   โปรแกรมจะสร้างไฟล์สำหรับตรวจสอบ (ห้ามแก้ไขไฟล์เหล่านี้โดยตรง):
-    *   `translation_review.json`: ไฟล์ที่แสดงผลลัพธ์จริง (Replace Tags แล้ว)
-    *   `translation_unapproved_review.json`: รายการข้อความที่ **ยังไม่ผ่าน** การ Approve (Pending List)
-    *   `translation_approved_review.json`: รายการข้อความที่ **ผ่าน** การ Approve แล้ว (Reference List)
+    *   `translation_inspection.json`: ไฟล์ที่แสดงผลลัพธ์จริง (Replace Tags แล้ว)
+    *   `translation_unapproved_inspection.json`: รายการข้อความที่ **ยังไม่ผ่าน** การ Approve (Pending List)
+    *   `translation_approved_inspection.json`: รายการข้อความที่ **ผ่าน** การ Approve แล้ว (Reference List)
 
 #### 4. สร้างไฟล์แปลฉบับสมบูรณ์ (Phase Complete)
 เมื่อแปลครบและตรวจสอบเสร็จแล้ว

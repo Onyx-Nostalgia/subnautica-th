@@ -16,10 +16,10 @@
 * **Content:** Read in @glossary_items/agent_workspace/glossary.md
 
 **B. [APPROVED_REVIEW]**
-* **Purpose:** Contains examples of previously translated and human-approved keys.
-* **Rule:** Analyze the **Tone, Sentence Structure, and Vocabulary choice** from these examples. Mimic this style.
-* **Rule:** If a Key in the current task matches a Key in this list, use the approved version directly.
-* **Content:** Read in @glossary_items/agent_workspace/translation_approved_review.json
+*   **Role:** Approved Context (Reference)
+*   **Description:** Contains items that have been **approved** by the reviewer. Use this to understand the established style, tone, and terminology.
+*   **Format:** JSON (Key-Value)
+*   **Content:** Read in @glossary_items/agent_workspace/translation_approved_inspection.json
 
 ---
 

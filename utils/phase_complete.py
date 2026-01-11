@@ -9,7 +9,7 @@ console = Console()
 
 def create_phase_complete(phase_obj):
     """
-    Reads approved reviews, extracts the 'Result', and updates the complete translation file for the given phase.
+    Reads approved inspection files, extracts the 'Result', and updates the complete translation file for the given phase.
     
     Args:
         phase_obj (TranslationPhase): The phase configuration object (e.g., config.PHASE_3).
@@ -21,7 +21,7 @@ def create_phase_complete(phase_obj):
     complete_path = phase_obj.COMPLETE_PATH
 
     if not approved_path.exists():
-        console.print(f"[bold red]Error:[/bold red] Approved review file not found at {approved_path}")
+        console.print(f"[bold red]Error:[/bold red] Approved inspection file not found at {approved_path}")
         return
 
     try:
@@ -48,7 +48,7 @@ def create_phase_complete(phase_obj):
             complete_data[key] = value["Result"]
             count += 1
         
-    console.print(f"Merged [bold green]{count}[/bold green] items from approved review.")
+    console.print(f"Merged [bold green]{count}[/bold green] items from approved inspection.")
 
     # Save the updated complete file
     save_json(complete_data, complete_path)

@@ -106,7 +106,7 @@ def main():
                     setup_phase(phase_obj, phase_path)
 
             case "2":
-                # --- Create Review Form ---
+                # --- Generate Inspection Files ---
                 res = ask_phase()
                 if res:
                     phase_obj, _, _ = res
