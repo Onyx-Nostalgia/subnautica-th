@@ -46,7 +46,7 @@ def main():
         main_choices = {
             "0": "Initialization & Setup (Clone Data, Preprocess, Classify)",
             "1": "Setup Phase (Prepare files for translation)",
-            "2": "Create Review Form (For Agent/Manual Review)",
+            "2": "Generate Inspection Files (Approved/Unapproved)",
             "3": "Create Translation Complete (Finalize Phase)",
             "4": "Build Final Translation (Merge all phases)",
             "5": "Deploy to Game",

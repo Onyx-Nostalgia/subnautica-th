@@ -1,4 +1,3 @@
-![Header](/docs/img/Guide.png)
 # Translation Guide (คู่มือการแปล)
 
 เอกสารนี้รวบรวมขั้นตอนการทำงาน (Step-by-step Journey) สำหรับการแปลเกม Subnautica โดยใช้เครื่องมือในโปรเจกต์นี้ ตั้งแต่การตั้งค่าเริ่มต้น ไปจนถึงการนำไฟล์เข้าเกม
@@ -28,21 +27,21 @@
 
 ### ขั้นตอนการทำงาน (Workflow)
 
-#### 1. Setup Phase
-เลือกเมนูหมวด 1-5 ตาม Phase ที่ต้องการทำ (เช่น `1. Setup Phase 1`) โปรแกรมจะสร้างไฟล์สำคัญ 2 ไฟล์ในโฟลเดอร์ `data/[PHASE_NAME]/`:
-*   `translation_key.json`: เก็บ Key ทั้งหมดของ Phase นั้น (อ้างอิงจากต้นฉบับ)
-*   `translation_progress.json`: **ไฟล์หลักในการทำงาน** ใช้เก็บสถานะการแปล
+#### 1. เริ่มต้น Phase (Setup)
+*   เลือกเมนู **`1. Setup Phase`** แล้วระบุเลข Phase (1-5)
+*   โปรแกรมจะสร้างไฟล์สำคัญ 2 ไฟล์ในโฟลเดอร์ `data/[PHASE_NAME]/`:
+    *   `translation_key.json`: เก็บ Key ทั้งหมดของ Phase นั้น (อ้างอิงจากต้นฉบับ)
+    *   `translation_progress.json`: **ไฟล์หลักในการทำงาน** ใช้เก็บสถานะการแปล
 
 #### 2. แปลภาษา (Editing)
 เราจะใช้เวลาส่วนใหญ่กับไฟล์ `translation_progress.json` โดยใช้ `editor.py` หรือแก้ไฟล์ JSON โดยตรง
 
 **การใช้งาน Editor:**
-*   เปิด Terminal ใหม่ แล้วรันคำสั่ง:
+*   เลือกเมนู **`6. Utilities / Tools`** -> **`3. Open Translation Editor`**
+*   หรือรันคำสั่งใน Terminal ใหม่:
     ```bash
     uv run streamlit run editor.py
     ```
-    *(สามารถดูคำสั่งนี้ได้จากเมนู 19 ในโปรแกรมหลัก)*
-
 *   **แก้ไขเฉพาะ field `Result` เท่านั้น**
 *   **Special Tags:**
     *   `[thai]` หรือ `[THAI]`: ใช้แทนค่าจาก field `Thai` (ของเดิม)
@@ -50,22 +49,18 @@
     *   *ใช้ tag เหล่านี้เพื่อลด Human Error จากการ Copy-Paste*
 *   **การ Approve:** หากประโยคไหนแปลสมบูรณ์แล้ว ให้แก้ field `Approved` เป็น `true`
 
-#### 3. ตรวจสอบและใช้ AI (Review & AI Assistance)
-เลือกเมนูหมวด 6-10 (Create Review Form) เพื่อสร้างไฟล์สำหรับตรวจสอบ:
-*   `translation_review.json`: ไฟล์ที่แปลง Tags (`[thai]`/`[english]`) เป็นข้อความจริงแล้ว (ห้ามแก้ไฟล์นี้ ให้กลับไปแก้ที่ progress)
-*   `translation_unapproved_review.json`: รวมข้อความที่ **ยังไม่ผ่าน** การ Approve (ใช้ส่งต่อให้ AI ช่วยแปล)
-*   `translation_approved_review.json`: รวมข้อความที่ **ผ่าน** การ Approve แล้ว (ใช้เป็นตัวอย่าง Context ให้ AI)
-
-**เทคนิคสำหรับ Phase 2 (Glossary Items):**
-*   Phase นี้มีคำศัพท์เยอะมาก ควรให้ความสำคัญกับการกำหนด **Glossary / Rule** ที่ชัดเจนด้วยมนุษย์ เพื่อใช้เป็นมาตรฐานสำหรับ Phase อื่นๆ และสร้าง [`agent/agent_glossary_items/glossary_format_rule.md`](/agent/agent_glossary_items/glossary_format_rule.md) ของตัวเองขึ้นมา (อาจมีได้หลายไฟล์ แล้วแต่รูปแบบการแบ่งหมวด)
-*   ควรคัดกรองเฉพาะ Glossary ที่เกี่ยวข้องส่งให้ AI เพื่อลด Token และเพิ่มความแม่นยำ อย่างเช่น
-    *   แยกคำศัพท์ตามหมวด (เช่น ชื่อสิ่งมีชีวิต, ชื่อวัตถุ, ชื่อสถานที่) 
-    *   หรือเขียน code ทำเป็น Keyword search ตรวจสอบว่า phase ใช้ glossary ไหนบ้าง แล้วคัดกรองส่งให้ AI
+#### 3. ตรวจสอบข้อมูล (Inspection)
+เมื่อต้องการดูภาพรวมงาน หรือเตรียมข้อมูลสำหรับส่งต่อ (เช่น ให้คนหรือ AI รับช่วงต่อ) เพื่อจะได้ทราบว่ามีข้อความใดที่ยังไม่เสร็จบ้างหรือผ่านการ Approve แล้วบ้าง
+*   เลือกเมนู **`2. Generate Inspection Files`** แล้วระบุเลข Phase
+*   โปรแกรมจะสร้างไฟล์สำหรับตรวจสอบ (ห้ามแก้ไขไฟล์เหล่านี้โดยตรง):
+    *   `translation_review.json`: ไฟล์ที่แสดงผลลัพธ์จริง (Replace Tags แล้ว)
+    *   `translation_unapproved_review.json`: รายการข้อความที่ **ยังไม่ผ่าน** การ Approve (Pending List)
+    *   `translation_approved_review.json`: รายการข้อความที่ **ผ่าน** การ Approve แล้ว (Reference List)
 
 #### 4. สร้างไฟล์แปลฉบับสมบูรณ์ (Phase Complete)
-เมื่อแปลครบและตรวจสอบเสร็จแล้ว ให้เลือกเมนูหมวด 11-15 (Create Translation Complete)
-*   โปรแกรมจะสร้างไฟล์ `translation_complete.json` ของ Phase นั้นๆ
-*   ไฟล์นี้จะดึงข้อมูลจาก `translation_approved_review.json` เท่านั้น
+เมื่อแปลครบและตรวจสอบเสร็จแล้ว
+*   เลือกเมนู **`3. Create Translation Complete`** แล้วระบุเลข Phase
+*   โปรแกรมจะสร้างไฟล์ `translation_complete.json` ของ Phase นั้นๆ (ดึงข้อมูลจากรายการที่ Approved แล้วเท่านั้น)
 
 ---
 
@@ -74,26 +69,27 @@
 เมื่อได้ไฟล์แปลครบตามต้องการแล้ว (ไม่จำเป็นต้องครบทุก Phase ก็ได้)
 
 1.  **รวมไฟล์ (Build Final):**
-    *   เลือกเมนู **`16. Build Final Translation`**
+    *   เลือกเมนู **`4. Build Final Translation`**
     *   โปรแกรมจะรวม `translation_complete.json` จากทุก Phase มารวมเป็นไฟล์เดียว
 
-3.  **นำเข้าเกม (Deploy):**
-    *   เลือกเมนู **`17. Deploy to Game`**
-    *   โปรแกรมจะนำไฟล์ที่รวมเสร็จแล้ว ไปวางในโฟลเดอร์เกมให้ทันที
-
-### กรณีแก้ไขไฟล์ Final ด้วยมือ (Manual Fix)
-หากมีการแก้ไขไฟล์ `_decode.json` ในโฟลเดอร์ `final/` ด้วยตัวเอง (เพื่อแก้คำผิดด่วน)
-*   เลือกเมนู **`20. Re-Encode Final Files`**
-*   โปรแกรมจะแปลงไฟล์ Decode กลับเป็นไฟล์เกม (Encoded) ให้ทันที โดยไม่ต้อง Build ใหม่ทั้งหมด
+2.  **นำเข้าเกม (Deploy):**
+    *   เลือกเมนู **`5. Deploy to Game`**
+    *   โปรแกรมจะนำไฟล์ที่รวมเสร็จแล้ว ไปวางในโฟลเดอร์เกมให้ทันที (สามารถเลือก Version และ Path ได้)
 
 ---
 
-## 🛠️ 4. การตรวจสอบและแก้ไข (Audit & Update)
+## 🛠️ 4. เครื่องมือเสริม (Utilities)
 
-ทำขั้นตอนนี้หลังจากได้ไฟล์ `translation_complete.json` ของ Phase นั้นๆ แล้ว (จบข้อ 2.4) แต่ต้องการตรวจสอบความถูกต้องอีกครั้งก่อนนำไปรวมไฟล์
+เมนู **`6. Utilities / Tools`** รวบรวมเครื่องมืออำนวยความสะดวกเพิ่มเติม:
 
-1.  ใช้ Agent (เช่น `agent_auditor`) ช่วยตรวจสอบไฟล์ `translation_complete.json`
-2.  บันทึกผลการแก้ไขเป็นไฟล์ JSON (เช่น `fixed_1.json`) ไว้ใน `agent/agent_auditor/phase_[N]_review/`
-3.  เลือกเมนู **`18. Update Complete from Fixed`**
-4.  ระบุ Phase และ Version ของไฟล์ Fixed เพื่ออัปเดตข้อมูลกลับเข้าสู่ `translation_complete.json`
-5.  เมื่อมั่นใจแล้ว ค่อยไปทำขั้นตอน **3. รวมไฟล์และติดตั้ง (Build & Deploy)** ต่อไป
+### 1. Update Complete from Fixed (Audit Fix)
+ใช้สำหรับกรณีที่มีการแก้ไขคำผิดหลังจากได้ไฟล์ Complete แล้ว (เช่น ให้ Agent Auditor ตรวจสอบ)
+*   บันทึกผลการแก้ไขเป็นไฟล์ JSON (เช่น `fixed_1.json`) ไว้ใน `agent/agent_auditor/phase_[N]_review/`
+*   เลือกเมนูนี้เพื่ออัปเดตข้อมูลกลับเข้าสู่ `translation_complete.json`
+
+### 2. Re-Encode Final Files (Manual Fix)
+ใช้สำหรับกรณีที่มีการแก้ไขไฟล์ `_decode.json` ในโฟลเดอร์ `final/` ด้วยมือ (เพื่อแก้คำผิดด่วน)
+*   เลือกเมนูนี้เพื่อแปลงไฟล์ Decode กลับเป็นไฟล์เกม (Encoded) ให้ทันที โดยไม่ต้อง Build ใหม่ทั้งหมด
+
+### 3. Open Translation Editor
+แสดงคำสั่งสำหรับเปิดโปรแกรม Editor
