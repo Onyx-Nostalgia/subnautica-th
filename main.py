@@ -129,7 +129,7 @@ def main():
                 if Prompt.ask("Deploy specific version?", choices=["y", "n"], default="n") == "y":
                     deploy_version = int(Prompt.ask("Enter version number"))
 
-                default_dest = config.GAME_TRANSLATION_PATH
+                default_dest = config.GAME_LANGUAGE_ROOT / "Thai.json"
                 console.print(f"\nDefault Destination: [cyan]{default_dest}[/cyan]")
                 
                 use_default = Prompt.ask("Deploy to this path?", choices=["y", "n"], default="y")

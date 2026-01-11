@@ -1,6 +1,6 @@
 import shutil
-import os
 from pathlib import Path
+
 from rich.console import Console
 from rich.prompt import Prompt
 
@@ -19,7 +19,7 @@ def setup_workspace():
             return
 
     # Ask for game path
-    default_path = "/mnt/d/Epic Games/Subnautica/Subnautica_Data/StreamingAssets/SNUnmanagedData/LanguageFiles"
+    default_path = config.GAME_LANGUAGE_ROOT
     
     console.print(f"\nDefault Game Path: [cyan]{default_path}[/cyan]")
     use_default = Prompt.ask("Use default path?", choices=["y", "n"], default="y")

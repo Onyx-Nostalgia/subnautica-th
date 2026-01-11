@@ -136,7 +136,7 @@ def deploy_to_game(version: Optional[int] = None, destination: Optional[Path] = 
         return
     
     # Use provided destination or fallback to config
-    final_dest = destination if destination else config.GAME_TRANSLATION_PATH
+    final_dest = destination if destination else config.GAME_LANGUAGE_ROOT / "Thai.json"
     
     # Validate destination directory
     if not final_dest.parent.exists():

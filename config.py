@@ -70,4 +70,4 @@ PHASE_5 = TranslationPhase('data/5_the_encyclopedia')
 
 # Game Configuration
 # TODO: Make this configurable via environment variable or user input
-GAME_TRANSLATION_PATH = Path('/mnt/d/Epic Games/Subnautica/Subnautica_Data/StreamingAssets/SNUnmanagedData/LanguageFiles/Thai.json')
+GAME_LANGUAGE_ROOT = Path('/mnt/d/Epic Games/Subnautica/Subnautica_Data/StreamingAssets/SNUnmanagedData/LanguageFiles')
