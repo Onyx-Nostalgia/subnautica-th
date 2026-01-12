@@ -1,0 +1,25 @@
+1. ไป Folder Game Subnautica ภายในเครื่องของคุณแล้วหา folder ต่อไปนี้ 
+Subnautica_Data\StreamingAssets\SNUnmanagedData\LanguageFiles 
+ซึ่งคุณจะพบไฟล์ Thai.json ของเกมนี้ 
+
+เช่น หากคุณลง game Subnautica จาก Epic จะมี Path ประมาณนี้
+C:\Epic Games\Subnautica\Subnautica_Data\StreamingAssets\SNUnmanagedData\LanguageFiles
+หรือ
+D:\Epic Games\Subnautica\Subnautica_Data\StreamingAssets\SNUnmanagedData\LanguageFiles
+
+1.1. (เผื่อเกิดปัญหา) Backup Thai.json ของเกมนี้เอาไว้ก่อนโดยการสร้าง Folder ใหม่ขึ้นมาและเก็บ file  Thai.json ของเกมนี้เอาไว้ที่ไหนก่อนก็ได้
+ตัวอย่าง Folder สำหรับ backup
+D:\Epic Games\Subnautica\Subnautica_Data\StreamingAssets\SNUnmanagedData\LanguageFiles\BKUP\Thai.json
+
+2. นำไฟล์ Thai.json จากไฟล์ zip นี้ ลากมาวางทับแทนที่ไฟล์ ...\Subnautica_Data\StreamingAssets\SNUnmanagedData\LanguageFiles\Thai.json
+
+3. เข้าเกม ไปที่ Options > Language เลือก "Thai"  จากนั้นกด Apply
+4. Enjoy ครับ
+
+
+หากเกิดปัญหา นำไฟล์จากข้อ 1.1 ที่คุณเคย backup ไว้ กลับมาใช้แทน และแจ้งปัญหาให้ทราบที่ 
+Nexus: https://www.nexusmods.com/subnautica/mods/2892
+FB: https://www.facebook.com/nostalgia.onyx
+
+
+by OnyxNos

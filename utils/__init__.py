@@ -4,6 +4,7 @@ from utils.phase_inspection import generate_inspection_files
 from utils.phase_setup import setup_phase
 from utils.release import (
     build_final_translation,
+    create_release_package,
     deploy_to_game,
     re_encode_final_files,
 )

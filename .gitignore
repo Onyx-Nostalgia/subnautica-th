@@ -6,3 +6,5 @@ tmp/
 data/
 final/
 .ruff_cache
+releases/
+*.zip

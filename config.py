@@ -64,6 +64,12 @@ PHASE_4 = TranslationPhase('data/4_the_journey_lore')
 PHASE_5 = TranslationPhase('data/5_the_encyclopedia')
 
 
+# Release Paths
+FINAL_DIR = Path("final/")
+INSTALL_TEMPLATE_PATH = Path("docs/HOW_TO_INSTALL_TEMPLATE.txt")
+RELEASE_DIR = Path("releases/")
+
+
 # Temporary Paths
 ## example manual paths; adjust as needed
 # DECODED_THAI_V2_PATH = 'data/tmp/Decoded_Thai_v2.json'

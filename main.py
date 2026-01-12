@@ -1,3 +1,4 @@
+import re
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
@@ -7,6 +8,7 @@ import config
 from utils import (
     build_final_translation,
     create_phase_complete,
+    create_release_package,
     deploy_to_game,
     generate_inspection_files,
     re_encode_final_files,
@@ -50,7 +52,8 @@ def main():
             "3": "Create Translation Complete (Finalize Phase)",
             "4": "Build Final Translation (Merge all phases)",
             "5": "Deploy to Game",
-            "6": "Utilities / Tools (Editor, Fix, Re-encode)",
+            "6": "Create Release Package (ZIP)",
+            "7": "Utilities / Tools (Editor, Fix, Re-encode)",
             "q": "Quit"
         }
 
@@ -158,6 +161,18 @@ def main():
                     deploy_to_game(version=deploy_version, destination=final_dest)
 
             case "6":
+                # --- Create Release Package ---
+                version_str = Prompt.ask("Enter Release Version String (e.g. 1.0.1, must be x.x.x)")
+                if not re.fullmatch(r"^\d+\.\d+\.\d+$", version_str):
+                    console.print("[bold red]Error:[/bold red] Version string must be in x.x.x format (e.g., 1.0.1). Aborting release package creation.")
+                else:
+                    source_ver = None
+                    if Prompt.ask("Use latest translation version as source?", choices=["y", "n"], default="y") == "n":
+                        source_ver = int(Prompt.ask("Enter source version number"))
+                    
+                    create_release_package(version_str, source_version=source_ver)
+
+            case "7":
                 # --- Utilities ---
                 while True:
                     console.print("\n[bold cyan]--- Utilities / Tools ---[/bold cyan]")
@@ -199,7 +214,7 @@ def main():
                     console.clear()
         
         # Centralized Pause for main actions (excluding sub-menus and quit)
-        if action not in ["0", "6", "q"]:
+        if action not in ["0", "7", "q"]:
             console.input("\n[dim]Press Enter to continue...[/dim]")
 
     console.print("[bold green]Goodbye![/bold green]")

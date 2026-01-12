@@ -1,6 +1,7 @@
 import json
 import re
 import shutil
+import zipfile
 from pathlib import Path
 from typing import List, Optional
 
@@ -13,19 +14,18 @@ from utils.file_io import save_json
 
 console = Console()
 
-FINAL_DIR = Path("final/")
 
 def get_next_version() -> int:
     """
     Scans the final directory to determine the next version number.
     Returns 1 if no files exist.
     """
-    if not FINAL_DIR.exists():
+    if not config.FINAL_DIR.exists():
         return 1
     
     latest_version = 0
     # Look for files matching Thai_v{number}.json (excluding _decode.json)
-    for file_path in FINAL_DIR.glob("Thai_v*.json"):
+    for file_path in config.FINAL_DIR.glob("Thai_v*.json"):
         if "_decode.json" in file_path.name:
             continue
         
@@ -43,16 +43,83 @@ def get_latest_version_number() -> int:
     version = get_next_version() - 1
     return version if version > 0 else 0
 
+def create_release_package(version_str: str, source_version: Optional[int] = None):
+    """
+    Creates a distribution ZIP file containing the translation JSON and installation instructions.
+    Args:
+        version_str: Version string for the release (e.g., "1.0.1") used in filename and header.
+        source_version: Integer version of the source Thai_vX.json file to use. 
+                        If None, uses the latest version found.
+    """
+    console.print(f"[bold blue]Creating Release Package v{version_str}...[/bold blue]")
+
+    # 1. Determine Source File
+    if source_version is None:
+        source_version = get_latest_version_number()
+        console.print(f"Auto-detected latest source version: [cyan]v{source_version}[/cyan]")
+    
+    source_file = config.FINAL_DIR / f"Thai_v{source_version}.json"
+    
+    if not source_file.exists():
+        console.print(f"[bold red]Error:[/bold red] Source translation file not found: {source_file}")
+        console.print("Please check the source version number.")
+        return
+
+    # 2. Prepare Output ZIP Name
+    zip_name = f"Subnautica-Thai-v{version_str}.zip"
+    zip_path = config.RELEASE_DIR / zip_name
+    config.RELEASE_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 3. Generate HOW_TO_INSTALL.txt
+    template_path = config.INSTALL_TEMPLATE_PATH
+    if not template_path.exists():
+        console.print(f"[bold red]Error:[/bold red] Template not found: {template_path}")
+        return
+
+    readme_path = config.FINAL_DIR / "HOW_TO_INSTALL.txt"
+    try:
+        with open(template_path, 'r', encoding='utf-8') as f:
+            template_content = f.read()
+        
+        header = f"Subnautica-Thai-v{version_str}\nSubnautica ภาษาไทย 100% version {version_str}\n\n"
+        full_content = header + template_content
+        
+        # Write to temporary file for zipping
+        with open(readme_path, 'w', encoding='utf-8') as f:
+            f.write(full_content)
+            
+    except Exception as e:
+        console.print(f"[bold red]Error creating readme:[/bold red] {e}")
+        return
+
+    # 4. Create ZIP
+    try:
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+            # Add Thai.json (rename to Thai.json inside zip)
+            zf.write(source_file, arcname="Thai.json")
+            # Add HOW_TO_INSTALL.txt
+            zf.write(readme_path, arcname="HOW_TO_INSTALL.txt")
+            
+        console.print("\n[bold green]Success![/bold green] Release package created:")
+        console.print(f"📂 Path: [yellow]{zip_path}[/yellow]")
+            
+    except Exception as e:
+        console.print(f"[bold red]Error creating ZIP:[/bold red] {e}")
+    finally:
+        # Cleanup temp readme
+        if readme_path.exists():
+            readme_path.unlink()
+
 def build_final_translation():
     """
     Merges all translation phases and creates the final JSON files.
     Generates both an encoded version (for the game) and a decoded version (for reference).
     """
-    FINAL_DIR.mkdir(parents=True, exist_ok=True)
+    config.FINAL_DIR.mkdir(parents=True, exist_ok=True)
     
     next_version = get_next_version()
-    final_path = FINAL_DIR / f"Thai_v{next_version}.json"
-    final_decode_path = FINAL_DIR / f"Thai_v{next_version}_decode.json"
+    final_path = config.FINAL_DIR / f"Thai_v{next_version}.json"
+    final_decode_path = config.FINAL_DIR / f"Thai_v{next_version}_decode.json"
     
     console.print(f"[bold blue]Building Final Translation v{next_version}...[/bold blue]")
 
@@ -128,7 +195,7 @@ def deploy_to_game(version: Optional[int] = None, destination: Optional[Path] = 
             return
         console.print(f"Latest version detected: [bold green]v{version}[/bold green]")
     
-    source_file = FINAL_DIR / f"Thai_v{version}.json"
+    source_file = config.FINAL_DIR / f"Thai_v{version}.json"
     
     if not source_file.exists():
         console.print(f"[bold red]Error:[/bold red] File not found: {source_file}")
@@ -161,11 +228,11 @@ def re_encode_final_files():
     """
     console.print("[bold blue]Re-encoding final files...[/bold blue]")
     
-    if not FINAL_DIR.exists():
-        console.print(f"[bold red]Error:[/bold red] Directory not found: {FINAL_DIR}")
+    if not config.FINAL_DIR.exists():
+        console.print(f"[bold red]Error:[/bold red] Directory not found: {config.FINAL_DIR}")
         return
 
-    decode_files = list(FINAL_DIR.glob("*_decode.json"))
+    decode_files = list(config.FINAL_DIR.glob("*_decode.json"))
     
     if not decode_files:
         console.print("[yellow]No decoded files found to process.[/yellow]")
@@ -176,7 +243,7 @@ def re_encode_final_files():
     
     for decode_path in decode_files:
         target_name = decode_path.name.replace("_decode.json", ".json")
-        target_path = FINAL_DIR / target_name
+        target_path = config.FINAL_DIR / target_name
         
         try:
             # 1. Read source (decoded)
