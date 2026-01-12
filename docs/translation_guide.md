@@ -41,7 +41,7 @@
 
 https://github.com/user-attachments/assets/e9010cb2-1cee-474c-961c-8e4252873afb
 
-*   เลือกเมนู **`6. Utilities / Tools`** -> **`3. Open Translation Editor`**
+*   เลือกเมนู **`7. Utilities / Tools`** -> **`3. Open Translation Editor`**
 *   หรือรันคำสั่งใน Terminal ใหม่:
     ```bash
     uv run streamlit run editor.py
@@ -80,11 +80,15 @@ https://github.com/user-attachments/assets/e9010cb2-1cee-474c-961c-8e4252873afb
     *   เลือกเมนู **`5. Deploy to Game`**
     *   โปรแกรมจะนำไฟล์ที่รวมเสร็จแล้ว ไปวางในโฟลเดอร์เกมให้ทันที (สามารถเลือก Version และ Path ได้)
 
+3.  **สร้างแพ็คเกจสำหรับเผยแพร่ (Create Release Package):**
+    *   เลือกเมนู **`6. Create Release Package (ZIP)`**
+    *   สร้างไฟล์ .zip ของชุดภาษาสำหรับเผยแพร่ (สามารถระบุ Version ได้)
+
 ---
 
 ## 🛠️ 4. เครื่องมือเสริม (Utilities)
 
-เมนู **`6. Utilities / Tools`** รวบรวมเครื่องมืออำนวยความสะดวกเพิ่มเติม:
+เมนู **`7. Utilities / Tools`** รวบรวมเครื่องมืออำนวยความสะดวกเพิ่มเติม:
 
 ### 1. Update Complete from Fixed (Audit Fix)
 ใช้สำหรับกรณีที่มีการแก้ไขคำผิดหลังจากได้ไฟล์ Complete แล้ว (เช่น ให้ Agent Auditor ตรวจสอบ)
@@ -135,7 +139,7 @@ graph TD
         
         subgraph "Translation Loop"
             EditLoop[Editing / Translating]:::phase
-            EditLoop -.->|Use Tool| Editor[Menu 6.3: Translation Editor]:::util
+            EditLoop -.->|Use Tool| Editor[Menu 7.3: Translation Editor]:::util
             Editor -->|Update Result/Approved| ProgFile
             
             EditLoop --> Inspect[Menu 2: Generate Inspection Files]:::phase
@@ -158,14 +162,17 @@ graph TD
         
         FinalFile --> Deploy[Menu 5: Deploy to Game]:::deploy
         Deploy --> GameFolder[[Game Directory]]
+        FinalFile --> ReleasePackage[Menu 6: Create Release Package ZIP]:::deploy
+        ReleasePackage --> ZipFile(Subnautica-Thai-vX.X.X.zip)
+
     end
 
     subgraph "🛠️ Utilities"
-        ManualFix[Manual Edit _decode.json]:::util --> ReEncode[Menu 6.2: Re-Encode Final Files]:::util
+        ManualFix[Manual Edit _decode.json]:::util --> ReEncode[Menu 7.2: Re-Encode Final Files]:::util
         ReEncode --> FinalFile
         
         AgentAudit[Agent Audit]:::util --> FixedJson(fixed_X.json)
-        FixedJson --> UpdateFixed[Menu 6.1: Update from Fixed]:::util
+        FixedJson --> UpdateFixed[Menu 7.1: Update from Fixed]:::util
         UpdateFixed --> CompFile
     end
 ```
