@@ -1,4 +1,3 @@
-import re
 from pathlib import Path
 
 from rich.console import Console
@@ -127,6 +126,7 @@ def main():
             case "5":
                 # --- Deploy ---
                 source_path = None
+                abort = False
                 default_source = config.FINAL_ENCODED_PATH
                 console.print(f"\nDefault Source: [cyan]{default_source}[/cyan]")
                 
@@ -142,35 +142,39 @@ def main():
                         else:
                             console.print(f"[bold red]Error:[/bold red] File not found: {user_src}")
                             if Prompt.ask("Try again?", choices=["y", "n"], default="y") == "n":
+                                abort = True
                                 break
-
-                default_dest = config.GAME_LANGUAGE_ROOT / "Thai.json"
-                console.print(f"\nDefault Destination: [cyan]{default_dest}[/cyan]")
                 
-                use_default = Prompt.ask("Deploy to this path?", choices=["y", "n"], default="y")
-                final_dest = default_dest
+                if abort:
+                    console.print("[yellow]Deployment aborted.[/yellow]")
+                else:
+                    default_dest = config.GAME_LANGUAGE_ROOT / "Thai.json"
+                    console.print(f"\nDefault Destination: [cyan]{default_dest}[/cyan]")
+                    
+                    use_default = Prompt.ask("Deploy to this path?", choices=["y", "n"], default="y")
+                    final_dest = default_dest
 
-                if use_default == "n":
-                    while True:
-                        user_path_str = Prompt.ask("Enter 'LanguageFiles' folder or full file path")
-                        user_path_str = user_path_str.strip('"').strip("'")
-                        user_path = Path(user_path_str)
-                        
-                        if user_path.is_dir():
-                            final_dest = user_path / "Thai.json"
-                        else:
-                            final_dest = user_path
+                    if use_default == "n":
+                        while True:
+                            user_path_str = Prompt.ask("Enter 'LanguageFiles' folder or full file path")
+                            user_path_str = user_path_str.strip('"').strip("'")
+                            user_path = Path(user_path_str)
                             
-                        if final_dest.parent.exists():
-                            break
-                        else:
-                            console.print(f"[bold red]Error:[/bold red] Directory not found: {final_dest.parent}")
-                            if Prompt.ask("Try again?", choices=["y", "n"], default="y") == "n":
-                                final_dest = None
+                            if user_path.is_dir():
+                                final_dest = user_path / "Thai.json"
+                            else:
+                                final_dest = user_path
+                                
+                            if final_dest.parent.exists():
                                 break
-                
-                if final_dest:
-                    deploy_to_game(source=source_path, destination=final_dest)
+                            else:
+                                console.print(f"[bold red]Error:[/bold red] Directory not found: {final_dest.parent}")
+                                if Prompt.ask("Try again?", choices=["y", "n"], default="y") == "n":
+                                    final_dest = None
+                                    break
+                    
+                    if final_dest:
+                        deploy_to_game(source=source_path, destination=final_dest)
 
             case "6":
                 # --- Utilities ---
