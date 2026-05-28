@@ -1,26 +1,25 @@
 import re
+from pathlib import Path
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
-from pathlib import Path
 
 import config
+from classification.category_tree import run_category_tree
+from classification.classify import run_classification
+from phase_mapping.generate_phase_json import main as generate_phase_main
+from pre_processing.compare_key import run_comparison
+from pre_processing.preprocess import clean_thai, pre_proccess
 from utils import (
     build_final_translation,
     create_phase_complete,
-    create_release_package,
     deploy_to_game,
     generate_inspection_files,
-    re_encode_final_files,
     setup_phase,
     update_complete_from_fixed,
 )
 from utils.setup_project import setup_workspace
-from pre_processing.preprocess import pre_proccess, clean_thai
-from pre_processing.compare_key import run_comparison
-from classification.classify import run_classification
-from classification.category_tree import run_category_tree
-from phase_mapping.generate_phase_json import main as generate_phase_main
 
 console = Console()
 
@@ -52,8 +51,7 @@ def main():
             "3": "Create Translation Complete (Finalize Phase)",
             "4": "Build Final Translation (Merge all phases)",
             "5": "Deploy to Game",
-            "6": "Create Release Package (ZIP)",
-            "7": "Utilities / Tools (Editor, Fix, Re-encode)",
+            "6": "Utilities / Tools (Editor, Fix)",
             "q": "Quit"
         }
 
@@ -128,9 +126,23 @@ def main():
 
             case "5":
                 # --- Deploy ---
-                deploy_version = None
-                if Prompt.ask("Deploy specific version?", choices=["y", "n"], default="n") == "y":
-                    deploy_version = int(Prompt.ask("Enter version number"))
+                source_path = None
+                default_source = config.FINAL_ENCODED_PATH
+                console.print(f"\nDefault Source: [cyan]{default_source}[/cyan]")
+                
+                if Prompt.ask("Use default source?", choices=["y", "n"], default="y") == "n":
+                    while True:
+                        user_src_str = Prompt.ask("Enter full path to the source Thai.json file")
+                        user_src_str = user_src_str.strip('"').strip("'")
+                        user_src = Path(user_src_str)
+                        
+                        if user_src.is_file():
+                            source_path = user_src
+                            break
+                        else:
+                            console.print(f"[bold red]Error:[/bold red] File not found: {user_src}")
+                            if Prompt.ask("Try again?", choices=["y", "n"], default="y") == "n":
+                                break
 
                 default_dest = config.GAME_LANGUAGE_ROOT / "Thai.json"
                 console.print(f"\nDefault Destination: [cyan]{default_dest}[/cyan]")
@@ -158,28 +170,15 @@ def main():
                                 break
                 
                 if final_dest:
-                    deploy_to_game(version=deploy_version, destination=final_dest)
+                    deploy_to_game(source=source_path, destination=final_dest)
 
             case "6":
-                # --- Create Release Package ---
-                version_str = Prompt.ask("Enter Release Version String (e.g. 1.0.1, must be x.x.x)")
-                if not re.fullmatch(r"^\d+\.\d+\.\d+$", version_str):
-                    console.print("[bold red]Error:[/bold red] Version string must be in x.x.x format (e.g., 1.0.1). Aborting release package creation.")
-                else:
-                    source_ver = None
-                    if Prompt.ask("Use latest translation version as source?", choices=["y", "n"], default="y") == "n":
-                        source_ver = int(Prompt.ask("Enter source version number"))
-                    
-                    create_release_package(version_str, source_version=source_ver)
-
-            case "7":
                 # --- Utilities ---
                 while True:
                     console.print("\n[bold cyan]--- Utilities / Tools ---[/bold cyan]")
                     util_choices = {
                         "1": "Update Complete from Fixed (Audit Fix)",
-                        "2": "Re-Encode Final Files (Update from Decode)",
-                        "3": "Open Translation Editor (Instructions)",
+                        "2": "Open Translation Editor (Instructions)",
                         "b": "Back"
                     }
                     for k, v in util_choices.items():
@@ -198,8 +197,6 @@ def main():
                                 version = Prompt.ask("Enter fixed version number", default="1")
                                 update_complete_from_fixed(int(phase_num), int(version))
                         case "2":
-                            re_encode_final_files()
-                        case "3":
                             console.print(Panel(
                                 "[bold yellow]To start the Translation Editor:[/bold yellow]\n\n"
                                 "Please open a [bold]NEW TERMINAL[/bold] window and run the following command:\n\n"
@@ -214,7 +211,7 @@ def main():
                     console.clear()
         
         # Centralized Pause for main actions (excluding sub-menus and quit)
-        if action not in ["0", "7", "q"]:
+        if action not in ["0", "6", "q"]:
             console.input("\n[dim]Press Enter to continue...[/dim]")
 
     console.print("[bold green]Goodbye![/bold green]")

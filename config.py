@@ -65,9 +65,13 @@ PHASE_5 = TranslationPhase('data/5_the_encyclopedia')
 
 
 # Release Paths
-FINAL_DIR = Path("final/")
+RESULTS_DIR = Path("results/")
+FINAL_BUILD_DIR = RESULTS_DIR / "build"
+FINAL_DECODED_PATH = RESULTS_DIR / "Thai_decoded.json"
+FINAL_ENCODED_PATH = FINAL_BUILD_DIR / "Thai.json"
+
+# Legacy (template moved to results/templates/)
 INSTALL_TEMPLATE_PATH = Path("docs/HOW_TO_INSTALL_TEMPLATE.txt")
-RELEASE_DIR = Path("releases/")
 
 
 # Temporary Paths

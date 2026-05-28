@@ -8,3 +8,6 @@ final/
 .ruff_cache
 releases/
 *.zip
+MARKING.md
+results/
+.antigravitycli/
